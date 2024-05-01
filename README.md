@@ -1,2 +1,2 @@
 # Calculator
-A calculator made in C which uses a stack to convert a given expression into postfix and then evaluates it. It can evaluate expressions with parenthesis and integers with multiple digits. I plan on adding more functionality as well as a GUI.
+A calculator made in C which uses a stack to convert a given expression into postfix and then evaluates it. It can evaluate expressions with parenthesis and integers with multiple digits. Now contains a very basic PyQt6 GUI with not every button functioning yet. I know the GUI looks bad, I am a mediocre C programmer not a graphic designer. The python file calls the C functions using the built in ctypes library. 

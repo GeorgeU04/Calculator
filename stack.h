@@ -13,4 +13,5 @@ bool is_empty(Stack *stack);
 int32_t peek(Stack *stack);
 void free_stack(Stack *stack);
 int32_t stack_size(Stack *stack);
+int32_t peek_any(Stack *stack, int32_t index);
 #endif

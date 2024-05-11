@@ -37,6 +37,12 @@ int32_t prec(char c) {
     return -1;
 }
 
+bool is_negative(int32_t index, Stack *stack) {
+  if (is_operator(peek_any(stack, index - 1)))
+    return true;
+  return false;
+}
+
 int32_t eval(const char *exp) {
   Stack *stack = create_stack(strlen(exp));
   if (!stack) {
@@ -47,17 +53,32 @@ int32_t eval(const char *exp) {
     if (exp[i] == ' ' || exp[i] == '\n')
       continue;
 
-    else if (isdigit(exp[i])) {
-      int32_t num = 0;
-
-      while (isdigit(exp[i])) {
-        // deal with the multiple digit numbers
-        num = num * 10 + (int32_t)(exp[i] - '0');
+    else if (isdigit(exp[i]) || (exp[i] == '-' && isdigit(exp[i + 1]))) {
+      // negatives
+      if (exp[i] == '-') {
+        int32_t num = 0;
         ++i;
-      }
-      --i;
+        while (isdigit(exp[i])) {
+          // deal with the multiple digit negative numbers
+          num = num * 10 + (int32_t)(exp[i] - '0');
+          ++i;
+        }
+        --i;
+        num = -num;
+        push(stack, num);
 
-      push(stack, num);
+      } else {
+        int32_t num = 0;
+
+        while (isdigit(exp[i])) {
+          // deal with the multiple digit numbers
+          num = num * 10 + (int32_t)(exp[i] - '0');
+          ++i;
+        }
+        --i;
+
+        push(stack, num);
+      }
     }
 
     else {
@@ -99,10 +120,18 @@ char *in_to_post(char *str) {
   Stack *stack = create_stack(64);
   size_t j = -1;
   for (size_t i = 0; i < strlen(str); ++i) {
-    if (isdigit(str[i])) { // operand
-      output[++j] = str[i];
-      if (i < strlen(str) - 1 && !isdigit(str[i + 1])) // Check for operand
-        output[++j] = ' ';
+    if (isdigit(str[i]) ||
+        (str[i] == '-' && isdigit(str[i + 1]))) { // operand or negative number
+      if (str[i] == '-') {
+        output[++j] = str[i]; // Add the '-' to output
+        ++i;                  // Move to the next character
+      }
+      while (isdigit(str[i])) {
+        output[++j] = str[i];
+        ++i;
+      }
+      --i;
+      output[++j] = ' ';
     } else if (str[i] == '(') { // left paren
       push(stack, str[i]);
     } else if (str[i] == ')') { // right paren

@@ -10,10 +10,21 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 import ctypes
 from ctypes import c_char_p, c_int
 
-
- 
-
 class Ui_MainWindow(object):
+    @staticmethod
+    def check_input(exp):
+        left_paren = 0
+        right_paren = 0
+        operands = 0
+        for char in exp:
+            if char == "(":
+                left_paren += 1
+            elif char == ")":
+                right_paren += 1
+        if left_paren == right_paren:
+            return True
+        return False
+
     @staticmethod
     def to_byte_string(py_str):
         return py_str.encode('utf-8') + b'\0'
@@ -195,9 +206,12 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def press_it(self, pressed):
-        if pressed == "=":
-            output = eval_function(postfix_function(self.to_byte_string(self.outputLabel.text())))
-            self.outputLabel.setText(str(output))       
+        if pressed == "=" :
+            if self.check_input(self.outputLabel.text()): 
+                output = eval_function(postfix_function(self.to_byte_string(self.outputLabel.text())))
+                self.outputLabel.setText(str(output))       
+            else:
+                self.outputLabel.setText("Syntax Error")
         elif pressed == "C":
             self.outputLabel.setText("0")
         else:

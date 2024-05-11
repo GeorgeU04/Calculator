@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <strings.h>
 
 struct Stack {
   int32_t top;       // top of stack
@@ -63,6 +64,13 @@ int32_t peek(Stack *stack) {
     return '@';
   }
   return stack->array[stack->top];
+}
+
+int32_t peek_any(Stack *stack, int32_t index) {
+  if (is_empty(stack) || index >= stack->size || index < 0) {
+    return '@';
+  }
+  return stack->array[index];
 }
 
 // returns stack size
